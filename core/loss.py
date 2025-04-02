@@ -128,7 +128,9 @@ class TNTLoss(nn.Module):
         # score_loss = torch.sum(torch.mul(- torch.log(pred_dict['score']), score_gt)) / batch_size
         score_loss = F.binary_cross_entropy(pred_dict['score'], score_gt, reduction='sum')
         loss += self.lambda3 * score_loss
-
+        #cls_loss: 预测出的taget点与真值的loss  tar_offset_loss：: 预测出的offset与真值的loss
+        #traj_loss: teacher forcing loss， 利用真实的target点来预测轨迹
+        #pred_dict: score: 预测出的轨迹与真值score loss
         loss_dict = {"tar_cls_loss": cls_loss, "tar_offset_loss": offset_loss, "traj_loss": reg_loss, "score_loss": score_loss}
         if self.aux_loss:
             if not isinstance(aux_pred, torch.Tensor) or not isinstance(aux_gt, torch.Tensor):
